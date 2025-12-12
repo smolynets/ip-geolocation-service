@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
-from pydantic import BaseModel, Field
-from api.utils import validate_ip, fetch_ip_info_from_ip_api_com
+
 from api.api_models import IPApiResponse
+from api.utils import fetch_ip_info_from_ip_api_com, validate_ip
 
 router = APIRouter()
 

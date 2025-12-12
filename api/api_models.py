@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class IPApiResponse(BaseModel):
     status: str
     country: str
@@ -13,7 +14,8 @@ class IPApiResponse(BaseModel):
     timezone: str
     isp: str
     org: str
-    as_: str = Field(alias="as")  # "as" is a reserved word in Python, so we add an underscore: "as_".
+    # "as" is a reserved word in Python, so we add an underscore: "as_".
+    as_: str = Field(alias="as")
     query: str
 
     class Config:
