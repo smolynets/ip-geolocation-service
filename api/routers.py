@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 
 from api.api_models import IPApiResponse
 from api.utils import fetch_ip_info_from_ip_api_com, validate_ip
@@ -21,6 +21,8 @@ async def get_my_location_by_ip(request: Request):
     if x_forwarded_for:
         ip = x_forwarded_for.split(":")[0].strip()
     else:
+        if request.client is None:
+            raise HTTPException(status_code=400, detail="Cannot determine client IP")
         ip = request.client.host
     ip_data = await fetch_ip_info_from_ip_api_com(ip)
     return IPApiResponse(**ip_data)
