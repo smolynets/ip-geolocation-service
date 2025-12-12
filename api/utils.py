@@ -1,5 +1,6 @@
-from fastapi import HTTPException
 import httpx
+
+from fastapi import HTTPException
 
 
 base_url = "http://ip-api.com/json/"
