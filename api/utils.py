@@ -1,9 +1,21 @@
 import httpx
+import ipaddress
 
 from fastapi import HTTPException
 
 
 base_url = "http://ip-api.com/json/"
+
+
+async def validate_ip(ip: str) -> None:
+    """
+    Checks if the given IP is a valid IPv4 or IPv6 address.
+    Raises HTTPException(400) if the IP address is invalid.
+    """
+    try:
+        ipaddress.ip_address(ip)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid IP address format")
 
 
 async def fetch_ip_info_from_ip_api_com(ip: str) -> dict:
