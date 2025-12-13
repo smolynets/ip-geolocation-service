@@ -11,6 +11,7 @@ app.include_router(router)
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
+    """Return error response in a unified format."""
     return JSONResponse(
         status_code=exc.status_code,
         content=ErrorResponse(detail=exc.detail).dict()

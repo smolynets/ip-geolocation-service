@@ -69,7 +69,7 @@ responses = {
     "/get_location_by_ip/{ip}",
     response_model=IPApiResponse,
     responses = responses, # type: ignore  # FastAPI OpenAPI dict type workaround
-    summary="Get geolocation info for a given IP",
+    summary="Get geolocation geolocation for a given IP",
     description=(
         "Returns geolocation information for the specified IP address,\n"
         "including details such as country, region, city,\n"
@@ -78,7 +78,7 @@ responses = {
     tags=["IP Geolocation"]
 )
 async def get_location_by_ip(
-    ip: str = Path(..., description="IP address to lookup",
+    ip: str = Path(..., description="IP address to look up",
     example="8.8.8.8")
 ):
     """
@@ -104,9 +104,12 @@ async def get_location_by_ip(
     tags=["IP Geolocation"]
 )
 async def get_my_location_by_ip(request: Request):
+    """
+    Get geolocation info for my IP.
+    """
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(":")[0].strip()
+        ip = x_forwarded_for.split(",")[0].strip()
     else:
         if request.client is None:
             raise HTTPException(status_code=400, detail="Cannot determine client IP")

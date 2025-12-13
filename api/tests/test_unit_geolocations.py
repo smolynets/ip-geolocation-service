@@ -31,14 +31,14 @@ expected_data = {
 @pytest.mark.asyncio
 async def test_validate_ip_valid_ipv4_success():
     # call the function
-    validate_ip("8.8.8.8")
+    await validate_ip("8.8.8.8")
     # no response if success and no exception
 
 
 @pytest.mark.asyncio
 async def test_validate_ip_valid_ipv6_success():
     # call the function
-    validate_ip("2001:4860:4860::8888")
+    await validate_ip("2001:4860:4860::8888")
     # no response if success and no exception
 
 

@@ -19,7 +19,7 @@ async def validate_ip(ip: str) -> None:
 
 async def fetch_ip_info_from_ip_api_com(ip: str) -> dict:
     """
-    Asynchronously fetch geolocation info from ip-api.com.
+    Asynchronously fetch geolocation information from ip-api.com service.
     """
     url = base_url + ip
     try:
