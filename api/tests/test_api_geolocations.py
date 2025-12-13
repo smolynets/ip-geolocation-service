@@ -29,7 +29,7 @@ mock_response = {
 
 
 @pytest.mark.parametrize(
-    "url", ["/get_location_by_ip/8.8.8.8", "/get_my_location_by_ip"]
+    "url", ["/v1/get_location_by_ip/8.8.8.8", "/v1/get_my_location_by_ip"]
 )
 def test_get_location_by_ip_success(url):
     with patch(
@@ -49,7 +49,7 @@ def test_get_location_by_ip_success(url):
 
 
 @pytest.mark.parametrize(
-    "url", ["/get_location_by_ip/8.8.8.8", "/get_my_location_by_ip"]
+    "url", ["/v1/get_location_by_ip/8.8.8.8", "/v1/get_my_location_by_ip"]
 )
 def test_get_location_by_ip_pydantic_validation_fail(url):
     invalid_mock_response = copy(mock_response)

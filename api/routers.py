@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Path, Request
 from api.api_models import IPApiResponse
 from api.utils import fetch_ip_info_from_ip_api_com, validate_ip
 
-router = APIRouter()
+router = APIRouter(prefix="/v1")
 
 responses = {
     200: {
