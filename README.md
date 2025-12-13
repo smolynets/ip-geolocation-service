@@ -7,9 +7,9 @@ Build a FastAPI microservice that provides IP address geolocation information by
 #### Setup:
 
 ##### Please, create virtualenv and activate it and run:
-In root of project:
-1. pip install -r requirements.txt
-2. uvicorn main:app --reload
+###### In root of project:
+    pip install -r requirements.txt
+    uvicorn main:app --reload
 
 
 #### OpenAPI/Swagger Specification:
@@ -18,16 +18,16 @@ In root of project:
 
 
 #### REST API endpoints:
-1. GET //get_location_by_ip/{ip_addres} - Returns geolocation information for the specified IP address, including details such as country, region, city, latitude, longitude, ISP etc.
+1. GET /get_location_by_ip/{ip_addres} - Returns geolocation information for the specified IP address, including details such as country, region, city, latitude, longitude, ISP etc.
 2. GET /get_my_location_by_ip - Provides geolocation details for the IP address extracted from your request headers. The service automatically determines your IP using the 'X-Forwarded-For' header if available, or falls back to the direct client IP.
 
 
 #### Ruff/Mypy:
-In root of project:
-1. ruff check .
-2. mypy .
+###### In root of project:
+    ruff check .
+    mypy .
 
 
 #### Run Pytest tests:
-In root of project:
-python -m pytest
+###### In root of project:
+    python -m pytest
