@@ -6,3 +6,5 @@ ruff
 mypy
 pytest
 pytest-asyncio
+pyyaml
+types-PyYAML

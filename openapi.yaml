@@ -1,0 +1,248 @@
+openapi: 3.1.0
+info:
+  title: IP Geolocation Service
+  description: "\n    ## Overview\n    A FastAPI microservice that provides IP address\
+    \ geolocation information \n    by integrating with third-party IP geolocation\
+    \ APIs.\n    \n    ## Features\n    * \U0001F30D Look up geolocation for any IP\
+    \ address (IPv4/IPv6)\n    * \U0001F50D Auto-detect client IP from request headers\n\
+    \    * \U0001F4CD Returns country, region, city, coordinates, timezone, ISP info\n\
+    \    \n    ## Data Source\n    Uses [ip-api.com](http://ip-api.com/) for geolocation\
+    \ data.\n    Free tier with 45 requests per minute.\n    \n    ## Endpoints\n\
+    \    - `GET /get_location_by_ip/{ip}` - Lookup specific IP address\n    - `GET\
+    \ /get_my_location_by_ip` - Lookup your own IP address\n    "
+  contact:
+    name: Your Name
+    email: your.email@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+- url: http://localhost:8000
+  description: Development server
+- url: https://api.example.com
+  description: Production server (example)
+paths:
+  /get_location_by_ip/{ip}:
+    get:
+      tags:
+      - IP Geolocation
+      summary: Get geolocation for a given IP address
+      description: Returns geolocation information for the specified IP address, including
+        details such as country, region, city, latitude, longitude, timezone, and
+        ISP.
+      operationId: getLocationByIp
+      parameters:
+      - name: ip
+        in: path
+        required: true
+        schema:
+          type: string
+          description: IP address to look up (IPv4 or IPv6)
+          title: Ip
+        description: IP address to look up (IPv4 or IPv6)
+        example: 8.8.8.8
+      responses:
+        '200':
+          description: Successfully retrieved IP address information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPApiResponse'
+              example:
+                status: success
+                country: United States
+                countryCode: US
+                region: CA
+                regionName: California
+                city: Mountain View
+                zip: '94035'
+                lat: 37.386
+                lon: -122.0838
+                timezone: America/Los_Angeles
+                isp: Google LLC
+                org: Google LLC
+                as: AS15169 Google LLC
+                query: 8.8.8.8
+        '400':
+          description: Invalid IP address format
+          content:
+            application/json:
+              example:
+                detail: Invalid IP address format
+        '404':
+          description: IP address not found or service returned an error
+          content:
+            application/json:
+              example:
+                detail: IP address not found
+        '500':
+          description: Error processing the response from the external service
+          content:
+            application/json:
+              example:
+                detail: Failed to parse JSON response
+        '503':
+          description: External service unavailable or request error occurred
+          content:
+            application/json:
+              example:
+                detail: 'Request error: <error details>'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /get_my_location_by_ip:
+    get:
+      tags:
+      - IP Geolocation
+      summary: Get geolocation for your IP address
+      description: Provides geolocation details for the IP address extracted from
+        your request headers. The service automatically determines your IP using the
+        'X-Forwarded-For' header if available, or falls back to the direct client
+        IP.
+      operationId: getMyLocationByIp
+      responses:
+        '200':
+          description: Successfully retrieved IP address information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IPApiResponse'
+              example:
+                status: success
+                country: United States
+                countryCode: US
+                region: CA
+                regionName: California
+                city: Mountain View
+                zip: '94035'
+                lat: 37.386
+                lon: -122.0838
+                timezone: America/Los_Angeles
+                isp: Google LLC
+                org: Google LLC
+                as: AS15169 Google LLC
+                query: 8.8.8.8
+        '400':
+          description: Invalid IP address format
+          content:
+            application/json:
+              example:
+                detail: Invalid IP address format
+        '404':
+          description: IP address not found or service returned an error
+          content:
+            application/json:
+              example:
+                detail: IP address not found
+        '500':
+          description: Error processing the response from the external service
+          content:
+            application/json:
+              example:
+                detail: Failed to parse JSON response
+        '503':
+          description: External service unavailable or request error occurred
+          content:
+            application/json:
+              example:
+                detail: 'Request error: <error details>'
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    IPApiResponse:
+      properties:
+        status:
+          type: string
+          title: Status
+        country:
+          type: string
+          title: Country
+        countryCode:
+          type: string
+          title: Countrycode
+        region:
+          type: string
+          title: Region
+        regionName:
+          type: string
+          title: Regionname
+        city:
+          type: string
+          title: City
+        zip:
+          type: string
+          title: Zip
+        lat:
+          type: number
+          title: Lat
+        lon:
+          type: number
+          title: Lon
+        timezone:
+          type: string
+          title: Timezone
+        isp:
+          type: string
+          title: Isp
+        org:
+          type: string
+          title: Org
+        as:
+          type: string
+          title: As
+        query:
+          type: string
+          title: Query
+      type: object
+      required:
+      - status
+      - country
+      - countryCode
+      - region
+      - regionName
+      - city
+      - zip
+      - lat
+      - lon
+      - timezone
+      - isp
+      - org
+      - as
+      - query
+      title: IPApiResponse
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+tags:
+- name: IP Geolocation
+  description: Operations for retrieving IP geolocation data

@@ -5,7 +5,6 @@ from api.utils import fetch_ip_info_from_ip_api_com, validate_ip
 
 router = APIRouter()
 
-
 responses = {
     200: {
         "description": "Successfully retrieved IP address information",
@@ -64,25 +63,39 @@ responses = {
     }
 }
 
-
 @router.get(
     "/get_location_by_ip/{ip}",
     response_model=IPApiResponse,
-    responses = responses, # type: ignore  # FastAPI OpenAPI dict type workaround
-    summary="Get geolocation geolocation for a given IP",
+    responses=responses,  # type: ignore
+    operation_id="getLocationByIp",
+    summary="Get geolocation for a given IP address",
     description=(
-        "Returns geolocation information for the specified IP address,\n"
-        "including details such as country, region, city,\n"
-        "latitude, longitude, and ISP."
+        "Returns geolocation information for the specified IP address, "
+        "including details such as country, region, city, "
+        "latitude, longitude, timezone, and ISP."
     ),
     tags=["IP Geolocation"]
 )
 async def get_location_by_ip(
-    ip: str = Path(..., description="IP address to look up",
-    example="8.8.8.8")
+    ip: str = Path(
+        ..., 
+        description="IP address to look up (IPv4 or IPv6)",
+        example="8.8.8.8"
+    )
 ):
     """
-    Get geolocation info for a given IP.
+    Get geolocation info for a given IP address.
+    
+    Args:
+        ip: IP address to lookup (IPv4 or IPv6 format)
+        
+    Returns:
+        IPApiResponse with geolocation details
+        
+    Raises:
+        HTTPException: 400 if IP format is invalid
+        HTTPException: 404 if IP not found in database
+        HTTPException: 503 if external service is unavailable
     """
     await validate_ip(ip)
     ip_data = await fetch_ip_info_from_ip_api_com(ip)
@@ -92,27 +105,47 @@ async def get_location_by_ip(
 @router.get(
     "/get_my_location_by_ip",
     response_model=IPApiResponse,
-    responses = responses, # type: ignore  # FastAPI OpenAPI dict type workaround
-    summary="Retrieve geolocation information based on your request IP",
+    responses=responses,  # type: ignore
+    operation_id="getMyLocationByIp",
+    summary="Get geolocation for your IP address",
     description=(
-        "Provides geolocation details for the IP address\n"
-        "extracted from your request headers.\n"
-        "The service automatically determines your IP\n"
-        "using the 'X-Forwarded-For' header if available,\n"
+        "Provides geolocation details for the IP address "
+        "extracted from your request headers. "
+        "The service automatically determines your IP "
+        "using the 'X-Forwarded-For' header if available, "
         "or falls back to the direct client IP."
     ),
     tags=["IP Geolocation"]
 )
 async def get_my_location_by_ip(request: Request):
     """
-    Get geolocation info for my IP.
+    Get geolocation info for the requesting client's IP address.
+    
+    The IP is automatically extracted from:
+    1. X-Forwarded-For header (if behind proxy/load balancer)
+    2. Direct client IP (fallback)
+    
+    Args:
+        request: FastAPI Request object (auto-injected)
+        
+    Returns:
+        IPApiResponse with geolocation details
+        
+    Raises:
+        HTTPException: 400 if cannot determine client IP
+        HTTPException: 404 if IP not found in database
+        HTTPException: 503 if external service is unavailable
     """
     x_forwarded_for = request.headers.get("X-Forwarded-For")
     if x_forwarded_for:
         ip = x_forwarded_for.split(",")[0].strip()
     else:
         if request.client is None:
-            raise HTTPException(status_code=400, detail="Cannot determine client IP")
+            raise HTTPException(
+                status_code=400, 
+                detail="Cannot determine client IP"
+            )
         ip = request.client.host
+    
     ip_data = await fetch_ip_info_from_ip_api_com(ip)
     return IPApiResponse(**ip_data)
