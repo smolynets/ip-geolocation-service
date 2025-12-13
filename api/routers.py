@@ -1,33 +1,74 @@
 from fastapi import APIRouter, HTTPException, Path, Request
 
-from api.api_models import ErrorResponse, IPApiResponse
+from api.api_models import IPApiResponse
 from api.utils import fetch_ip_info_from_ip_api_com, validate_ip
 
 router = APIRouter()
 
 
 responses = {
-    200: {"description": "Successfully retrieved IP address information"},
-    400: {"model": ErrorResponse, "description": "Invalid IP address format"},
+    200: {
+        "description": "Successfully retrieved IP address information",
+        "content": {
+            "application/json": {
+                "example": {
+                    "status": "success",
+                    "country": "United States",
+                    "countryCode": "US",
+                    "region": "CA",
+                    "regionName": "California",
+                    "city": "Mountain View",
+                    "zip": "94035",
+                    "lat": 37.386,
+                    "lon": -122.0838,
+                    "timezone": "America/Los_Angeles",
+                    "isp": "Google LLC",
+                    "org": "Google LLC",
+                    "as": "AS15169 Google LLC",
+                    "query": "8.8.8.8"
+                }
+            }
+        }
+    },
+    400: {
+        "description": "Invalid IP address format",
+        "content": {
+            "application/json": {
+                "example": {"detail": "Invalid IP address format"}
+            }
+        }
+    },
     404: {
-        "model": ErrorResponse,
-        "description": "IP address not found or service returned an error"
+        "description": "IP address not found or service returned an error",
+        "content": {
+            "application/json": {
+                "example": {"detail": "IP address not found"}
+            }
+        }
     },
     500: {
-        "model": ErrorResponse,
-        "description": "Error processing the response from the external service"
+        "description": "Error processing the response from the external service",
+        "content": {
+            "application/json": {
+                "example": {"detail": "Failed to parse JSON response"}
+            }
+        }
     },
     503: {
-        "model": ErrorResponse,
-        "description": "External service unavailable or request error occurred"
-    },
+        "description": "External service unavailable or request error occurred",
+        "content": {
+            "application/json": {
+                "example": {"detail": "Request error: <error details>"}
+            }
+        }
+    }
 }
 
 
 @router.get(
     "/get_location_by_ip/{ip}",
     response_model=IPApiResponse,
-    responses = responses,
+    responses = responses, # type: ignore  # FastAPI OpenAPI dict type workaround
     summary="Get geolocation info for a given IP",
     description=(
         "Returns geolocation information for the specified IP address,\n"
@@ -51,7 +92,7 @@ async def get_location_by_ip(
 @router.get(
     "/get_my_location_by_ip",
     response_model=IPApiResponse,
-    responses = responses,
+    responses = responses, # type: ignore  # FastAPI OpenAPI dict type workaround
     summary="Retrieve geolocation information based on your request IP",
     description=(
         "Provides geolocation details for the IP address\n"

@@ -1,10 +1,6 @@
 from pydantic import BaseModel, Field
 
 
-class ErrorResponse(BaseModel):
-    detail: str
-
-
 class IPApiResponse(BaseModel):
     status: str
     country: str
@@ -21,8 +17,3 @@ class IPApiResponse(BaseModel):
     # "as" is a reserved word in Python, so we add an underscore: "as_".
     as_: str = Field(alias="as")
     query: str
-
-    model_config = {
-        "fields": {"as_": "as"},  # map field "as" to as_
-        "populate_by_name": True
-    }
