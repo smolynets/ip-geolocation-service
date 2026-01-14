@@ -1,0 +1,31 @@
+[project]
+name = "ip-geolocation-service"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Oleh Smolynets",email = "oleh_smolynets@epam.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx (>=0.28.1,<0.29.0)",
+    "fastapi (>=0.128.0,<0.129.0)",
+    "uvicorn (>=0.40.0,<0.41.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "ruff (>=0.14.11,<0.15.0)",
+    "mypy (>=1.19.1,<2.0.0)",
+    "pytest (>=9.0.2,<10.0.0)",
+    "pytest-asyncio (>=1.3.0,<2.0.0)",
+    "pyyaml (>=6.0.3,<7.0.0)",
+    "types-pyyaml (>=6.0.12.20250915,<7.0.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+packages = [
+    { include = "api", from = "src" }
+]

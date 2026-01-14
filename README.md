@@ -8,8 +8,9 @@ Build a FastAPI microservice that provides IP address geolocation information by
 
 ##### Please, create virtualenv and activate it and run:
 ###### In root of project:
-    pip install -r requirements.txt
-    uvicorn main:app --reload
+    poetry add ...
+    poetry install
+    poetry run uvicorn main:app --host 0.0.0.0 --port 8000
 
 
 #### OpenAPI/Swagger Specification:
