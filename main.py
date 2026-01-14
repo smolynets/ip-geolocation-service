@@ -2,8 +2,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from api.api_models import ErrorResponse
-from api.routers import router
+from src.api.api_models import ErrorResponse
+from src.api.routers import router
 
 app = FastAPI(
     title="IP Geolocation Service",
